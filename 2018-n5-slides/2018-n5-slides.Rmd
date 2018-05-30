@@ -1,0 +1,164 @@
+---
+title: "Chicago R User Group: Pre-R/Finance Meetup"
+author: " "
+date: "`r Sys.Date()`"
+output: RUGtools::intro_slides
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(RUGtools)
+```
+
+
+# Local R News
+
+## Chicago R User Group News
+
+Leading up to this meetup, we reached **`r NROW(member_list)`** members.
+As of yesterday's close, that's `r new_mem_counter(member_list)[NROW(new_mem_counter(member_list)), 2]` new members since our last meetup.
+
+```{r, warning=FALSE, message=FALSE}
+library(RUGtools)
+library(xts)
+
+members_xts <- xts(x = member_list$Member.ID, order.by = member_list$Joined.Group.on)
+
+plot(members_xts, col = "blue", grid.col = "white", main = "Chicago R User Group members by join date")
+```
+
+## Chicago R User Group {.columns-2 .smaller}
+
+**RUGtools.** An R package containing data and functions to help us organize the Chicago R User Group. 
+
+`intro_slides`: Creates this slide template
+
+`meetup_import`: Imports meetup data (but you need admin rights)
+
+`member_list`: Data set of member list with PII removed
+
+`pizza_estimate`: How many pizzas do we need for this here meetup?
+
+`new_mem_counter`: How many members joined between each meetup.
+
+You can download the package here:
+
+```{r, echo=TRUE, eval=FALSE}
+library(devtools)
+install_github("Chicago-R-User-Group/RUGtools")
+```
+
+Want to contribute? Fork the repo from our Github page @[Chicago-R-User-Group/RUGtools](https://github.com/Chicago-R-User-Group/RUGtools)
+
+
+Follow us:
+
+![](images/GitHub-Mark.png) [Chicago-R-User-Group](https://twitter.com/ChicagoRusers)
+
+
+![](images/twitter50x41.png) @[ChicagoRusers](https://twitter.com/ChicagoRusers)
+
+
+
+## R-Ladies Chicago
+
+```{r, out.width = "150px", fig.align='left'}
+path2 <- paste0(getwd(), "/images/R-LadiesGlobal.png")
+knitr::include_graphics(path2)
+```
+
+
+Thank you for attending! For more information, see their meetup page and twitter account:
+
+
+![](images/m_swarm_50x50.png)[meetup.com/R-Ladies Chicago](https://www.meetup.com/rladies-chicago/)
+
+
+![](images/twitter50x41.png)@[RLadiesChicago](https://twitter.com/RLadiesChicago)
+
+## R Fortunes from the past
+
+```{r, echo=TRUE}
+library(fortunes)
+fortune()
+```
+
+
+## Jobs: Anyone hiring? 
+
+C',mon...You know you want that risk-free referral bonus!
+
+
+
+# Global R news
+
+## R Consortium News: Spring Funding {.smaller}
+
+```{r, out.width = "300px", , fig.align='left'}
+path1 <- paste0(getwd(), "/images/R-Consortium-Logo.png")
+knitr::include_graphics(path1)
+```
+
+Through the The  Funded Project Program, now in it’s fourth year, the R Consortium has invested 
+more that **$650,000** USD in over 30 projects that impact the over 2 million R 
+users worldwide. Spring funding includes:
+
+* Maintaining DBI: Kirill Müller
+
+* Ongoing infrastructural development for R on Windows and MacOS: Jeroen Ooms
+
+* Developing Tools and Templates for Teaching Materials: François Michonneau
+
+*  PSI application for collaboration to create online R package validation repository: 
+Lyn Taylor
+
+* A unified platform for missing values methods and workflows: Julie Josse and Nicholas Tierney
+
+* histoRicalg — Preserving and Transfering Algorithmic Knowledge: John C Nash
+
+* Proposal to Create an R Consortium Working Group Focused on US Census Data: Ari Lamstein
+
+![](images/twitter50x41.png) @[RConsortium](https://twitter.com/Rconsortium)
+
+
+
+# Today's meetup and its Sponsor
+
+## Thanks to IBM!
+
+```{r, out.width = "900px"}
+path <- paste0(getwd(), "/images/IBM-R-Foundation.png")
+knitr::include_graphics(path)
+```
+
+## R/Finance: June 1st-2nd at UIC {.smaller}
+
+```{r, out.width = "900px"}
+path <- paste0(getwd(), "/images/R-finance-header.PNG")
+knitr::include_graphics(path)
+```
+
+From the inaugural conference in 2009, the annual R/Finance conference in Chicago has become the primary meeting for academics and practitioners interested in using R in Finance. Participants from academia and industry mingle for two days to exchange ideas about current research, best practices and applications.
+
+[https://www.rinfinance.com/](https://www.rinfinance.com/)
+
+
+## Today's Lightning Round contestants!
+
+* **Ray Buhr**: Time Series graphing in practice
+
+* **Troy Hernandez**: Simulating March Madness in R
+
+* **Ross Bennett**: Predictive models and their applications in “high-ish” frequency finance.
+
+* **Joe Rickert**: Package Watching
+
+* **Dale Rosenthal**: Preview of "A Quantitative Primer on Investments with R."
+
+
+
+
+
+
+
