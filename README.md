@@ -2,7 +2,7 @@
 
 In the spirit of the conference, this meetup will feature a series of short talks on practical applications with R! **IBM** will generously sponsor food and drinks at Haymarket Brewery, thank you **IBM**! Talks begin at 6:00 pm with time for networking before and after.
 
-## Ross Bennett: Predictive models and their applications in “high-ish” frequency finance.
+## Ross Bennett: [Predictive models and their applications in “high-ish” frequency finance](https://htmlpreview.github.io/?https://github.com/Chicago-R-User-Group/2018-n5--Pre-RFinance-meetup/blob/master/ROSS-BENNETT-predictive_modeling_lightning.html#1).
 
 Ross will talk about how he approaches the overall process of building models, evaluating their performance, and integrating them into a trading strategy. While his process has been honed trading in the ultra-competitive futures markets, he will use crypto currency data for the application because it’s the hot topic right now and the data is freely accessible to anyone who wants to reproduce his examples.
 Ross is the quantitative analyst for a trading desk at a proprietary futures trading firm. He is the co-author of the PortfolioAnalytics R package, maintainer of the FinancialInstrument package, and contributes to several other R packages used in finance and trading, including the venerable xts.
