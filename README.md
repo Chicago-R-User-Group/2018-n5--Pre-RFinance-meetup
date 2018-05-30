@@ -2,16 +2,19 @@
 
 In the spirit of the conference, this meetup will feature a series of short talks on practical applications with R! **IBM** will generously sponsor food and drinks at Haymarket Brewery, thank you **IBM**! Talks begin at 6:00 pm with time for networking before and after.
 
-## Ross Bennett: [Predictive models and their applications in “high-ish” frequency finance](https://htmlpreview.github.io/?https://github.com/Chicago-R-User-Group/2018-n5--Pre-RFinance-meetup/blob/master/ROSS-BENNETT-predictive_modeling_lightning.html#1).
+## Ray Buhr: Time Series graphing in practice
 
-Ross will talk about how he approaches the overall process of building models, evaluating their performance, and integrating them into a trading strategy. While his process has been honed trading in the ultra-competitive futures markets, he will use crypto currency data for the application because it’s the hot topic right now and the data is freely accessible to anyone who wants to reproduce his examples.
-Ross is the quantitative analyst for a trading desk at a proprietary futures trading firm. He is the co-author of the PortfolioAnalytics R package, maintainer of the FinancialInstrument package, and contributes to several other R packages used in finance and trading, including the venerable xts.
+Ray is going to show you best practices for quickly and repeatedly producing good time series graphs. This includes how to make your own custom themes and color palettes, align multiple charts, and a discussion of packages which add interactivity to time series charts (like dygraphs).
+Ray Buhr is the Manager of Data Science at Pangea Money Transfer. He has a Masters of Information & Data Science from the University of California, Berkeley and is passionate about R programming, data architecture, and mentoring other data scientists.
 
 ## Joe Rickert, R Studio: Package Watching
 
 For over a year, Joe has been reviewing all of the new packages submitted to CRAN each month, selecting his "Top 40" * and blogging about them on R Views. In this talk, he will discuss his criteria and methodology, describe some trends he has noticed, and offer a few ideas on what makes a great R package. He will finish with brief demos of two new tools for studying R packages: Ioannis Kosmidis' cranly package and pkgnet from Brian Burns, James Lamb, Patrick Boueri], and Jay Qi.
 
+## Ross Bennett: [Predictive models and their applications in “high-ish” frequency finance](https://htmlpreview.github.io/?https://github.com/Chicago-R-User-Group/2018-n5--Pre-RFinance-meetup/blob/master/ROSS-BENNETT-predictive_modeling_lightning.html#1).
 
+Ross will talk about how he approaches the overall process of building models, evaluating their performance, and integrating them into a trading strategy. While his process has been honed trading in the ultra-competitive futures markets, he will use crypto currency data for the application because it’s the hot topic right now and the data is freely accessible to anyone who wants to reproduce his examples.
+Ross is the quantitative analyst for a trading desk at a proprietary futures trading firm. He is the co-author of the PortfolioAnalytics R package, maintainer of the FinancialInstrument package, and contributes to several other R packages used in finance and trading, including the venerable xts.
 
 ## Troy Hernandez: [Simulating March Madness in R](https://troyhernandez.com/2018/03/13/simulating-march-madness-in-r/)
 
