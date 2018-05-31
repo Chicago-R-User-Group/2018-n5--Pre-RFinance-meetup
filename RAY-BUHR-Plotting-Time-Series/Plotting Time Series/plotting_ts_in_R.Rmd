@@ -1,0 +1,396 @@
+---
+title: "Plotting Time Series Data in R"
+subtitle: "Tips and Tricks for charts with Ticks"
+author: "Ray Buhr"
+date: "2018/05/28"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+load("ts_plot_talk.rdata")
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(anomalize)
+library(tidyquant)
+library(sweep)
+btc_days <- seq(as.Date("2017-01-01"), as.Date("2018-05-17"), by = "days")
+btc_prices <- crypto_prices %>%
+  filter(baseCurrency == "btc") %>%
+  select(currency = baseCurrency, price = close, date) %>% 
+  mutate(date = as.Date(date), currency = as.character(currency))
+missing_days <- btc_days[!(btc_days %in% btc_prices$date)]
+missing_prices <- c(10149.46, 9682.38, 6926.02)
+missing_btc <- data.frame(currency = rep("btc", 3), 
+                          price = missing_prices, date = missing_days, 
+                          stringsAsFactors = FALSE)
+btc_prices <- bind_rows(btc_prices, missing_btc) %>% 
+  arrange(date)
+```
+
+# What's a Time Series?
+
+In a nutshell, a _matrix of numerical data + index vector representing each timestamp_
+
+[Wikipedia Definition](https://en.wikipedia.org/wiki/Time_series):
+
+
+> Time series analysis comprises methods for analyzing time series data in order to extract meaningful statistics and other characteristics of the data. Time series forecasting is the use of a model to predict future values based on previously observed values.
+
+---
+# R Ecosystem for Time Series
+
+* Base R: `ts`, `stats`
+* Libraries: `zoo`, `xts`, `forecast`, `quantmod`
+* Tidyverse: `lubridate`
+* Tidyverse friendly: `tidyquant`, `timetk`, `anomalize`, `sweep`, `TSstudio`
+
+These packages help make working with data tied to time easier!
+
+If you want to learn more about what you can do in R, check out the 
+[Time Series Task View!](https://cran.r-project.org/web/views/TimeSeries.html)
+
+---
+
+# Base R: `ts`
+
+Converting a `data.frame` of BTC prices to a native R structure `ts` and plot
+
+```{r}
+btc_ts <- ts(btc_prices$price, start = as.Date("2017-01-01"), 
+             end = as.Date("2018-05-17"), frequency = 1)
+str(btc_ts)
+```
+
+---
+
+# Base R: `ts`
+
+```{r fig.height=5, fig.width=10}
+plot(btc_ts, 
+     ylab = "Closing Price in USD", 
+     xlab = "Time in Days Since 2017-01-01")
+```
+
+---
+
+# `xts`
+
+`xts` makes it easy to slice and dice data by the time index.
+
+- Convert data to an `xts` object
+
+```{r}
+btc_xts <- as.xts(btc_prices[, "price"], 
+                  order.by = btc_prices$date)
+str(btc_xts)
+```
+
+---
+# `xts`
+
+`xts` makes it easy to slice and dice data by the time index.
+
+```{r fig.height=5, fig.width=10}
+plot(btc_xts, main = "BTC Closing Price in USD by Day")
+```
+
+---
+# `xts`: Showing off `xts` plotting
+
+```r
+plot(btc_xts['2017-11-01/2017-12-31'], main = "",
+     bg = "black", col = c("orange", "skyblue"), 
+     grid.col = "#F8F8F8", labels.col = "white")
+addPanel(FUN = SMA, lty = 2, lwd = 3)
+```
+
+```{r, include=FALSE}
+plot(btc_xts['2017-11-01/2017-12-31'], main = "",
+     bg = "black", col = c("orange", "skyblue"), 
+     grid.col = "#F8F8F8", labels.col = "white")
+```
+
+
+```{r fig.height=4.5, fig.width=10, message=FALSE, warning=FALSE, echo=FALSE}
+addPanel(FUN = SMA, lty = 2, lwd = 3)
+```
+
+
+More thorough [tutorial in the package website](https://joshuaulrich.github.io/xts/plotting_panels.html).
+
+---
+# Base R: `decompose`
+
+`decompose` breaks a time seres down into 4 components
+
+- Observations
+- Trend
+- Seasonal
+- Random
+
+---
+# Base R: `decompose`
+
+Using the `USAccDeaths` dataset that ships with R 
+--
+ ... because BTC doesn't show daily seasonality
+
+--
+
+```{r}
+data(USAccDeaths)
+class(USAccDeaths)
+```
+
+--
+
+```{r}
+decomposed_deaths <- decompose(USAccDeaths)
+str(decomposed_deaths)
+```
+
+---
+# Base R: `decompose`
+
+Plot the decomposed time series
+
+```{r fig.height=6, fig.width=9}
+plot(decomposed_deaths)
+```
+
+---
+# `xts`: `decompose`
+
+What if we want to use `xts` instead?
+
+--
+
+[Stack Overflow Answer](https://stackoverflow.com/questions/43175206/preserve-timestamp-after-decomposing-xts-in-r)
+
+--
+
+The `sweep` package now makes this much easier!
+
+```{r}
+decomposed_deaths <- sweep::sw_tidy_decomp(decompose(USAccDeaths))
+str(decomposed_deaths)
+```
+
+---
+# `xts`: `decompose`
+
+And we can again easily convert to `xts`
+
+```{r}
+usaccdeaths_xts <- as.xts(
+  decomposed_deaths[, c("observed", "trend", "season", "random")], 
+  order.by = decomposed_deaths$index)
+```
+
+---
+# `xts`: `decompose`
+
+And again easily plot it!
+
+```{r fig.height=5, fig.width=10}
+plot(usaccdeaths_xts, multi.panel = 4, yaxis.same = FALSE, 
+     grid.col = "#F8F8F8", main = "Decomposition of USAccDeaths")
+```
+
+---
+# `ggplot`: `decompose`
+
+What if we like `ggplot` and the `tidyverse`?
+
+```r
+decomposed_deaths %>% 
+  select(index, observed, trend, season, random) %>% 
+  gather(key = "decomposition", value = "price", -index) %>% 
+  mutate(index = as.Date(index)) %>% 
+  mutate(
+    decomposition = factor(
+      decomposition, 
+      levels = c("observed", "trend", "season", "random"),
+      labels = c("observed", "trend", "season", "random"))
+  ) %>% 
+  ggplot(aes(x=index, y=price, color=decomposition)) +
+  geom_line() +
+  scale_x_date(labels = scales::date_format("%h-%y"), 
+               breaks = scales::date_breaks("1 year")) +
+  facet_wrap(~decomposition, scales = "free_y", ncol = 1) +
+  theme(legend.position = "none")
+```
+
+* Notice that need to convert index to `as.Date` 
+* Check out the `scale_x_date` line
+
+---
+# `ggplot`: `decompose`
+
+
+```{r echo=FALSE, fig.height=7, fig.width=10, message=FALSE, warning=FALSE}
+decomposed_deaths %>% 
+  select(index, observed, trend, season, random) %>% 
+  gather(key = "decomposition", value = "price", -index) %>% 
+  mutate(index = as.Date(index)) %>% 
+  mutate(
+    decomposition = factor(
+      decomposition, 
+      levels = c("observed", "trend", "season", "random"),
+      labels = c("observed", "trend", "season", "random"))
+  ) %>% 
+  ggplot(aes(x=index, y=price, color=decomposition)) +
+  geom_line() +
+  scale_x_date(labels = scales::date_format("%h-%y"), 
+               breaks = scales::date_breaks("1 year")) +
+  facet_wrap(~decomposition, scales = "free_y", ncol = 1) +
+  theme(legend.position = "none")
+```
+
+
+---
+# `ggplot`: Custom Themes
+
+The `ggplot` default theme has some decent defaults, but maybe it's not what you want. 
+
+Check out the alternative options!
+
+- [`ggthemes`](https://jrnold.github.io/ggthemes/)
+- [`hrbrthemes`](https://hrbrmstr.github.io/hrbrthemes/)
+
+---
+# `ggplot`: Custom Themes
+
+How to make your own ggplot theme:
+
+- Pick a theme you like, e.g. `theme_minimal`, and run the function without parens `()`
+
+```{r}
+theme_minimal
+```
+
+---
+# `ggplot`: Custom Themes
+
+- Use that as example/base code or build directly on top to make your own theme function. 
+
+- Check out the [Joey Stanley Blog Tutorial](http://joeystanley.com/blog/custom-themes-in-ggplot2) for a more thorough walkthrough.
+
+- Have to add `scale_color_` and `scale_fill_` functions, can use `ggthemes::scale_color_colorblind` as an example.
+
+---
+# `ggplot`: Custom Themes
+
+Example! `theme_autumn`
+
+![http://colorpalettes.net/color-palette-3505/](http://colorpalettes.net/wp-content/uploads/2017/09/cvetovaya-palitra-3505.png)
+
+---
+# `ggplot`: Custom Themes
+
+```r
+color_palette_autumn <- c(
+  "#37220c", "#be8b0a", "#bbddbe", "#797e89", "#415674")
+autumn_pal <- function() {
+  scales::manual_pal(color_palette_autumn)
+}
+scale_color_autumn <- function(...) {
+  discrete_scale("colour", "autumn", autumn_pal(), ...)
+}
+scale_fill_autumn <- function(...) {
+  discrete_scale("fill", "autumn", autumn_pal(), ...)
+}
+theme_autumn <- function() {
+  theme_minimal(base_size = 14, 
+                base_family = "Roboto") %+replace%
+    theme(legend.position = "top")
+}
+```
+
+---
+# `ggplot`: Before
+
+```{r echo=FALSE, fig.height=7, fig.width=10, message=FALSE, warning=FALSE}
+decomposed_deaths %>% 
+  select(index, observed, trend, season, random) %>% 
+  gather(key = "decomposition", value = "price", -index) %>% 
+  mutate(index = as.Date(index)) %>% 
+  ggplot(aes(x=index, y=price, color=decomposition)) +
+  geom_line() +
+  scale_x_date(labels = scales::date_format("%h-%y"), 
+               breaks = scales::date_breaks("1 year")) +
+  facet_wrap(~decomposition, scales = "free_y", ncol = 1) +
+  theme(legend.position = "none")
+```
+
+---
+# `ggplot`: After
+
+```{r echo=FALSE, fig.height=7, fig.width=10, message=FALSE, warning=FALSE}
+source("theme_autumn.R")
+decomposed_deaths %>% 
+  select(index, observed, trend, season, random) %>% 
+  gather(key = "decomposition", value = "price", -index) %>% 
+  mutate(index = as.Date(index)) %>% 
+  ggplot(aes(x=index, y=price, color=decomposition)) +
+  geom_line() +
+  scale_x_date(labels = scales::date_format("%h-%y"), 
+               breaks = scales::date_breaks("1 year")) +
+  facet_wrap(~decomposition, scales = "free_y", ncol = 1) +
+  theme_autumn() +
+  scale_color_autumn()
+```
+
+---
+# Adding Interactivity
+
+Why do we need interactivity?
+
+- Can helps you hone in on periods and patterns of interest
+- Lessen the burden on you to do all the analysis by passing off to the consumer or your plot
+- We have the internet and might as well take advantage of the medium
+
+---
+# Adding Interactivity to Plots in R
+
+Getting started is easily, but there's a lot of options. Here's a few.
+
+- [plotly](https://plot.ly/r/)
+- [dygraphs](http://rstudio.github.io/dygraphs/)
+- More at [htmlwidgets gallery](http://gallery.htmlwidgets.org/)
+
+---
+# `plotly`
+
+```{r fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+library(plotly)
+p <- ggplot(btc_prices, aes(x = date, y = price)) + geom_line()
+ggplotly(p)
+```
+
+---
+# `dygraphs`
+
+```{r fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+library(dygraphs)
+dygraph(btc_xts)
+```
+
+---
+# `dygraphs`
+
+```{r fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+dygraph(crypto_ts, main = "Cryptocurrency Prices Since 2017") %>% 
+  dyOptions(colors = autumn_pal()(3)[3:1], 
+            fillGraph = TRUE, fillAlpha = 0.3) %>% 
+  dyRangeSelector()
+```
+
