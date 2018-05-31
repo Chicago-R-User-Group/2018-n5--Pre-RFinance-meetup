@@ -16,8 +16,8 @@ library(RUGtools)
 
 ## Chicago R User Group News
 
-Leading up to this meetup, we reached **`r NROW(member_list)`** members.
-As of yesterday's close, that's `r new_mem_counter(member_list)[NROW(new_mem_counter(member_list)), 2]` new members since our last meetup.
+Leading up to this meetup, we reached **3170** members.
+As of yesterday's close, that's 90 new members since our last meetup.
 
 ```{r, warning=FALSE, message=FALSE}
 library(RUGtools)
@@ -85,9 +85,9 @@ fortune()
 ```
 
 
-## Jobs: Anyone hiring? 
+## Jobs: Anyone hiring? Any Staffing Consultants?
 
-C',mon...You know you want that risk-free referral bonus!
+C'mon...You know you want that risk-free referral bonus!
 
 
 
