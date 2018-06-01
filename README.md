@@ -9,7 +9,7 @@ In the spirit of the conference, this meetup will feature a series of short talk
 Ray is going to show you best practices for quickly and repeatedly producing good time series graphs. This includes how to make your own custom themes and color palettes, align multiple charts, and a discussion of packages which add interactivity to time series charts (like dygraphs).
 Ray Buhr is the Manager of Data Science at Pangea Money Transfer. He has a Masters of Information & Data Science from the University of California, Berkeley and is passionate about R programming, data architecture, and mentoring other data scientists. You can find Ray on chicago-tech.slack.com as @raybuhr. 
 
-## Joe Rickert, R Studio: Package Watching
+## Joe Rickert, R Studio: [Watching CRAN Packages](https://cdn.rawgit.com/joseph-rickert/Chicago_RUG_May2018/811ad542/Chicago_Talk.nb.html#)
 
 For over a year, Joe has been reviewing all of the new packages submitted to CRAN each month, selecting his "Top 40" * and blogging about them on R Views. In this talk, he will discuss his criteria and methodology, describe some trends he has noticed, and offer a few ideas on what makes a great R package. He will finish with brief demos of two new tools for studying R packages: Ioannis Kosmidis' cranly package and pkgnet from Brian Burns, James Lamb, Patrick Boueri], and Jay Qi.
 
